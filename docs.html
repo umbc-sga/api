@@ -1,0 +1,423 @@
+<html>
+    <head>
+        <title>SGApps API Documentation</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet"
+            href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/default.min.css">
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+        <style>
+            table, td, th, tr { border: 1px solid black; padding: 10px; }
+        </style>
+    </head>
+
+    <body class="container-fluid">
+        <h1 class="text-center">SGApps API Documentation</h1>
+
+        <h2>Why use SGApps APIs?</h2>
+        <ol>
+            <li>All non-real-time data is cached for faster API call times.</li>
+            <li>All return data is GZIP compressed for smaller data sizes.</li>
+            <li>All requests have CORS headers on them, so you can call them from client-side JavaScript in the browser.</li>
+            <li>Cleaner URLs and easy-to-understand API organization for all data sources.</li>
+        </ol>
+
+        <h2>Endpoints:</h2>
+        <ul>
+            <li>
+                <a href="#events">/events</a>
+                <ul>
+                    <li><a href="#get_events">GET /events</a></li>
+                    <li><a href="#get_events_by_group">GET /events/group/{group_token}</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#laundry">/laundry</a>
+                <ul>
+                    <li><a href="#get_laundry_rooms">GET /laundry/rooms</a></li>
+                    <li><a href="#get_machines">GET /laundry/rooms/{room_id}</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#menus">/menus</a>
+                <ul>
+                    <li><a href="#get_menus">GET /menus/{location}/{date}</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#news">/news</a>
+                <ul>
+                    <li><a href="#get_news">GET /news</a></li>
+                    <li><a href="#get_news_by_page">GET /news/{page_num}</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#posts">/posts</a>
+                <ul>
+                    <li><a href="#get_posts">GET /posts</a></li>
+                    <li><a href="#get_posts_by_group">GET /posts/group/{group_token}</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#transit">/transit</a>
+                <ul>
+                    <li><a href="#get_arrival_estimates">GET /transit/arrival-estimates</a></li>
+                    <li><a href="#get_arrival_estimates_by_routes">GET /transit/arrival-estimates/routes/{route_ids}</a></li>
+                    <li><a href="#get_arrival_estimates_by_stops">GET /transit/arrival-estimates/stops/{stop_ids}</a></li>
+                    <li><a href="#get_routes">GET /transit/routes</a></li>
+                    <li><a href="#get_segments">GET /transit/segments</a></li>
+                    <li><a href="#get_segments_by_routes">GET /transit/segments/routes/{route_ids}</a></li>
+                    <li><a href="#get_stops">GET /transit/stops</a></li>
+                    <li><a href="#get_vehicles">GET /transit/vehicles</a></li>
+                    <li><a href="#get_vehicles_by_routes">GET /transit/vehicles/routes/{route_ids}</a></li>
+                </ul>
+            </ul>
+        </ul>
+
+        <h2 id="events" class="mb-2">/events</h2>
+
+        <h5 id="get_events">GET /events</h5>
+        <p class="mb-2"><b>Output: </b>XML of upcoming myUMBC events.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript" id="get_events_code">fetch("https://apps.sga.umbc.edu/api/events")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_events_by_group">GET /events/group/{group_token}</h5>
+
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>group_token</td>
+                <td>String</td>
+                <td>Group tokens are parts of the group URL on myUMBC.</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>XML of upcoming myUMBC events of the specified group.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/events/group/sga")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h2 id="laundry" class="mb-2">/laundry</h2>
+
+        <h5 id="get_laundry_rooms">GET /laundry/rooms</h5>
+
+        <p class="mb-2"><b>Output: </b>JSON of information about all laundry rooms at UMBC.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/laundry/rooms")
+    .then(res => res.json())
+    .then(data => {
+        console.log(JSON.parse(JSON.stringify(data)));
+    });</code></pre>
+
+        <h5 id="get_machines">GET /laundry/rooms/{room_id}</h5>
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>room_id</td>
+                <td>Integer</td>
+                <td>Room IDs can be found through the /laundry/rooms endpoint.</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>JSON of information about all laundry machines in the specified room.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/laundry/rooms/4841014")
+    .then(res => res.json())
+    .then(data => {
+        console.log(JSON.parse(JSON.stringify(data)));
+    });</code></pre>
+
+        <h2 id="menus" class="mb-2">/menus</h2>
+
+        <h5 id="get_menus">GET /menus/{location}/{date}</h5>
+
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>location</td>
+                <td>String</td>
+                <td>Possible Values: (admin | dhall | skylight)</td>
+            </tr>
+
+            <tr>
+                <td>date</td>
+                <td>String</td>
+                <td>Must be in YYYY-MM-DD format</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>JSON of menu of that location for the day with all meal periods.</p>
+        
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/menus/dhall/2020-1-31")
+    .then(res => res.json())
+    .then(data => {
+        console.log(JSON.parse(JSON.stringify(data)));
+    });</code></pre>
+
+    <h2 id="news" class="mb-2">/news</h2>
+    <h5 id="get_news">GET /news</h5>
+
+    <p class="mb-2"><b>Output: </b>XML of most recently published Retriever articles in RSS format</p>
+
+    <b>Example:</b>
+    <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/news")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+    <h5 id="get_news_by_page">GET /news/page/{page_num}</h5>
+    <table class="mb-3">
+        <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Notes</th>
+        </tr>
+
+        <tr>
+            <td>page_num</td>
+            <td>Integer</td>
+            <td>Number must be greater than 0</td>
+        </tr>
+    </table>
+
+    <b>Example:</b>
+    <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/news/page/5")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+    <h2 id="posts" class="mb-2">/posts</h2>
+
+    <h5 id="get_posts">GET /posts</h5>
+    <p class="mb-2"><b>Output: </b>XML of recent community myUMBC posts.</p>
+
+    <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/posts")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+    <h5 id="get_posts_by_group">GET /posts/group/{group_token}</h5>
+
+    <p class="mb-2"><b>Inputs:</b></p>
+    <table class="mb-3">
+        <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Notes</th>
+        </tr>
+
+        <tr>
+            <td>group_token</td>
+            <td>String</td>
+            <td>Group tokens are parts of the group URL on myUMBC.</td>
+        </tr>
+    </table>
+
+    <p class="mb-2"><b>Output: </b>XML of recent myUMBC posts of the specified group.</p>
+
+    <b>Example:</b>
+    <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/posts/group/sga")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h2 id="transit">/transit</h2>
+
+        <h5 id="get_arrival_estimates">GET /transit/arrival-estimates</h5>
+        <p class="mb-2"><b>Output: </b>JSON of arrival estimates for all transit stops.</p>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/arrival-estimates")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_arrival_estimates_by_routes">GET /transit/arrival-estimates/routes/{route_ids}</h5>
+
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>route_ids</td>
+                <td>String</td>
+                <td>Can be one or have comma-separated list of route IDs that can be found from other transit endpoints.</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>JSON of arrival estimates for all transit stops on specific route(s).</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/arrival-estimates/routes/4000482")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_arrival_estimates_by_stops">GET /transit/arrival-estimates/stops/{stop_ids}</h5>
+
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>stop_ids</td>
+                <td>String</td>
+                <td>Can be one or have comma-separated list of stop IDs that can be found from other transit endpoints.</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>JSON of arrival estimates for all transit stops on specific route(s).</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/arrival-estimates/stops/4066762")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_routes">GET /transit/routes</h5>
+
+        <p class="mb-2"><b>Output: </b>JSON of information about all transit routes.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/routes")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_segments">GET /transit/segments</h5>
+
+        <p class="mb-2"><b>Output: </b>JSON of Encoded Polylines for all route segments.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/segments")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_segments_by_routes">GET /transit/segments/routes/{route_ids}</h5>
+
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>route_ids</td>
+                <td>String</td>
+                <td>Can be one or have comma-separated list of route IDs that can be found from other transit endpoints.</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>JSON of Encoded Polylines for route segments from specified route.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/segments/routes/4000482")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_stops">GET /transit/stops</h5>
+
+        <p class="mb-2"><b>Output: </b>JSON of information for all transit stops.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/stops")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_vehicles">GET /transit/vehicles</h5>
+
+        <p class="mb-2"><b>Output: </b>JSON of all active transit vehicles.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/vehicles")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <h5 id="get_vehicles_by_routes">GET /transit/vehicles/routes/{route_ids}</h5>
+
+        <p class="mb-2"><b>Inputs:</b></p>
+        <table class="mb-3">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Notes</th>
+            </tr>
+
+            <tr>
+                <td>route_ids</td>
+                <td>String</td>
+                <td>Can be one or have comma-separated list of route IDs that can be found from other transit endpoints.</td>
+            </tr>
+        </table>
+
+        <p class="mb-2"><b>Output: </b>JSON of all active transit vehicles on specified route.</p>
+
+        <b>Example:</b>
+        <pre><code class="javascript">fetch("https://apps.sga.umbc.edu/api/transit/vehicles/routes/4000482")
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    });</code></pre>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </body>
+</html>
